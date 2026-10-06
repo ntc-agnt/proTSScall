@@ -30,11 +30,11 @@ setwd("../reverse")
 system(paste(paste(scriptsPath, "AdelmanLab/NIH_scripts/bedgraphs2stdBedGraph/bedgraphs2stdBedGraph", sep = "/"), paste(outPrefix, "R", sep = "_")))
 setwd("../../")
 tssPrefix <- sapply(strsplit(sapply(strsplit(tssPath, "/"), "[", length(strsplit(tssPath, "/")[[1]])), "_formakeheatmap.txt"), "[", 1)
-system(sprintf("mkdir %s", final_pro_tss_dir))
+system(sprintf("mkdir -p %s", final_pro_tss_dir))
 
 # a temporary directory which will prevent incomplete files from populating the final `pro_tss` directory:
 tmp_pro_tss_dir <- 'pro_tss_tmp'
-system(sprintf('mkdir %s', tmp_pro_tss_dir))
+system(sprintf('mkdir -p %s', tmp_pro_tss_dir))
 
 system(paste(scriptsPath, "/AdelmanLab/NIH_scripts/make_heatmap/make_heatmap -t 6 -l s -s s --nohead -p bedGraphs/forward/", outPrefix, "_F.bedGraph -m bedGraphs/reverse/", outPrefix, "_R.bedGraph -- ", tssPath, " ", final_pro_tss_dir, "/", outPrefix, "_", tssPrefix, "_25mer_+-2kb.txt -2000 25 160", sep = ""))
 
