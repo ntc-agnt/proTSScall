@@ -28,6 +28,12 @@
 #     and the merged bedGraph chroms share naming; a mismatch (chr1 vs 1) would
 #     otherwise yield all-zero coverage and call everything inactive, exit 0.
 #
+# OPTIMIZED TOOLCHAIN (byte-identical output): the per-strand bedGraph merge uses
+#   the optimized NIH_scripts build `bedgraphs2stdBedGraph_optimized` (a streaming
+#   k-way merge: ~110x lower peak memory, modestly faster, byte-identical .bedGraph
+#   on sorted pipeline input) where it is deployed, falling back to the standard
+#   build otherwise. make_heatmap is intentionally left as the standard build.
+#
 # NOT changed here (deferred): NTC-003 config-file portability -- the invoked-path
 #   -> scriptsPath detection block below is kept as-is for now.
 #
@@ -136,6 +142,21 @@ if (startsWith(runningScript, "/n/data1/cores/ntc")) {
   scriptsPath <- "/n/data1/cores/ntc/scripts"
 }
 
+# Resolve the bedGraph-merge binary: prefer the optimized (streaming, ~110x lower
+# peak memory, byte-identical output) build where deployed, else the standard
+# build; stop if neither exists. make_heatmap is left as the standard build.
+b2stdDir <- paste(scriptsPath, "AdelmanLab/NIH_scripts/bedgraphs2stdBedGraph", sep = "/")
+b2stdOpt <- paste(b2stdDir, "bedgraphs2stdBedGraph_optimized", sep = "/")
+b2stdStd <- paste(b2stdDir, "bedgraphs2stdBedGraph", sep = "/")
+if (file.exists(b2stdOpt)) {
+  b2stdBin <- b2stdOpt
+} else if (file.exists(b2stdStd)) {
+  message(sprintf("note: optimized merge build not found (%s); using standard bedgraphs2stdBedGraph", b2stdOpt))
+  b2stdBin <- b2stdStd
+} else {
+  stop(sprintf("bedgraphs2stdBedGraph not found: looked for %s and %s", b2stdOpt, b2stdStd))
+}
+
 # ---------------------------------------------------------------------------
 # Merge per-sample 3' bedGraphs into one forward / one reverse track
 # ---------------------------------------------------------------------------
@@ -154,9 +175,9 @@ final_pro_tss_dir <- 'pro_tss'
 
 outPrefix <- sapply(strsplit(getwd(), "/"), tail, 2)[1]
 setwd("forward")
-run(paste(paste(scriptsPath, "AdelmanLab/NIH_scripts/bedgraphs2stdBedGraph/bedgraphs2stdBedGraph", sep = "/"), paste(outPrefix, "F", sep = "_")))
+run(paste(b2stdBin, paste(outPrefix, "F", sep = "_")))
 setwd("../reverse")
-run(paste(paste(scriptsPath, "AdelmanLab/NIH_scripts/bedgraphs2stdBedGraph/bedgraphs2stdBedGraph", sep = "/"), paste(outPrefix, "R", sep = "_")))
+run(paste(b2stdBin, paste(outPrefix, "R", sep = "_")))
 setwd("../../")
 tssPrefix <- sapply(strsplit(sapply(strsplit(tssPath, "/"), "[", length(strsplit(tssPath, "/")[[1]])), "_formakeheatmap.txt"), "[", 1)
 run(sprintf("mkdir -p %s", final_pro_tss_dir))
