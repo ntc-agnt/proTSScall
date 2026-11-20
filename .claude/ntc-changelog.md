@@ -14,6 +14,9 @@ Entry format (newest first):
 <!-- entries below, newest first -->
 
 ## 2026-11-20 · claude/vibrant-clarke-6uqmti
+- proTSScall_optimized.R: point NIH_scripts at the new location (./scripts/NascentTranscriptionCore/NIH_scripts, relocated from AdelmanLab/); base path defined once (nihBase) covering make_heatmap + bedgraphs2stdBedGraph. affects results: no (same tools, new path)
+
+## 2026-11-20 · claude/vibrant-clarke-6uqmti
 - proTSScall_optimized.R: merge step now prefers the optimized NIH_scripts build bedgraphs2stdBedGraph_optimized (streaming, ~110x lower peak memory, byte-identical output per its own harness) where deployed, falling back to the standard build; make_heatmap left standard. affects results: no (byte-identical merge)
 
 ## 2026-11-20 · claude/vibrant-clarke-6uqmti · NTC-001

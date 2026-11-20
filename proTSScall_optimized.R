@@ -145,7 +145,12 @@ if (startsWith(runningScript, "/n/data1/cores/ntc")) {
 # Resolve the bedGraph-merge binary: prefer the optimized (streaming, ~110x lower
 # peak memory, byte-identical output) build where deployed, else the standard
 # build; stop if neither exists. make_heatmap is left as the standard build.
-b2stdDir <- paste(scriptsPath, "AdelmanLab/NIH_scripts/bedgraphs2stdBedGraph", sep = "/")
+# NIH_scripts base (relocated 2026-11 from .../scripts/AdelmanLab/NIH_scripts to
+# .../scripts/NascentTranscriptionCore/NIH_scripts); defined once so a future move
+# -- or NTC-003 config -- is a one-line change.
+nihBase <- paste(scriptsPath, "NascentTranscriptionCore/NIH_scripts", sep = "/")
+makeHeatmapBin <- paste(nihBase, "make_heatmap/make_heatmap", sep = "/")
+b2stdDir <- paste(nihBase, "bedgraphs2stdBedGraph", sep = "/")
 b2stdOpt <- paste(b2stdDir, "bedgraphs2stdBedGraph_optimized", sep = "/")
 b2stdStd <- paste(b2stdDir, "bedgraphs2stdBedGraph", sep = "/")
 if (file.exists(b2stdOpt)) {
@@ -206,7 +211,7 @@ if (length(bgChroms) > 0L && length(intersect(listChroms, bgChroms)) == 0L) {
 # ---------------------------------------------------------------------------
 # make_heatmap matrix (+/- 2 kb, 25-bp bins)
 # ---------------------------------------------------------------------------
-run(paste(scriptsPath, "/AdelmanLab/NIH_scripts/make_heatmap/make_heatmap -t 6 -l s -s s --nohead -p bedGraphs/forward/", outPrefix, "_F.bedGraph -m bedGraphs/reverse/", outPrefix, "_R.bedGraph -- ", tssPath, " ", final_pro_tss_dir, "/", outPrefix, "_", tssPrefix, "_25mer_+-2kb.txt -2000 25 160", sep = ""))
+run(paste(makeHeatmapBin, " -t 6 -l s -s s --nohead -p bedGraphs/forward/", outPrefix, "_F.bedGraph -m bedGraphs/reverse/", outPrefix, "_R.bedGraph -- ", tssPath, " ", final_pro_tss_dir, "/", outPrefix, "_", tssPrefix, "_25mer_+-2kb.txt -2000 25 160", sep = ""))
 
 tssMat <- read.table(paste(final_pro_tss_dir, "/", outPrefix, "_", tssPrefix, "_25mer_+-2kb.txt", sep = ""), header = T, sep = "\t", row.names = 1)
 # the activity score sums TSS..+150 (bins X0.24 .. X125.149); fail if absent.
