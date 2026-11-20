@@ -14,6 +14,9 @@ Entry format (newest first):
 <!-- entries below, newest first -->
 
 ## 2026-11-20 · claude/vibrant-clarke-6uqmti
+- proTSScall.R (original): path-only fix, NIH_scripts AdelmanLab/ -> NascentTranscriptionCore/ for the relocated tools; logic untouched. affects results: no (same tools, new path)
+
+## 2026-11-20 · claude/vibrant-clarke-6uqmti
 - proTSScall_optimized.R: point NIH_scripts at the new location (./scripts/NascentTranscriptionCore/NIH_scripts, relocated from AdelmanLab/); base path defined once (nihBase) covering make_heatmap + bedgraphs2stdBedGraph. affects results: no (same tools, new path)
 
 ## 2026-11-20 · claude/vibrant-clarke-6uqmti
