@@ -25,9 +25,9 @@ final_pro_tss_dir <- 'pro_tss'
 
 outPrefix <- sapply(strsplit(getwd(), "/"), tail, 2)[1]
 setwd("forward")
-system(paste(paste(scriptsPath, "AdelmanLab/NIH_scripts/bedgraphs2stdBedGraph/bedgraphs2stdBedGraph", sep = "/"), paste(outPrefix, "F", sep = "_")))
+system(paste(paste(scriptsPath, "NascentTranscriptionCore/NIH_scripts/bedgraphs2stdBedGraph/bedgraphs2stdBedGraph", sep = "/"), paste(outPrefix, "F", sep = "_")))
 setwd("../reverse")
-system(paste(paste(scriptsPath, "AdelmanLab/NIH_scripts/bedgraphs2stdBedGraph/bedgraphs2stdBedGraph", sep = "/"), paste(outPrefix, "R", sep = "_")))
+system(paste(paste(scriptsPath, "NascentTranscriptionCore/NIH_scripts/bedgraphs2stdBedGraph/bedgraphs2stdBedGraph", sep = "/"), paste(outPrefix, "R", sep = "_")))
 setwd("../../")
 tssPrefix <- sapply(strsplit(sapply(strsplit(tssPath, "/"), "[", length(strsplit(tssPath, "/")[[1]])), "_formakeheatmap.txt"), "[", 1)
 system(sprintf("mkdir %s", final_pro_tss_dir))
@@ -36,7 +36,7 @@ system(sprintf("mkdir %s", final_pro_tss_dir))
 tmp_pro_tss_dir <- 'pro_tss_tmp'
 system(sprintf('mkdir %s', tmp_pro_tss_dir))
 
-system(paste(scriptsPath, "/AdelmanLab/NIH_scripts/make_heatmap/make_heatmap -t 6 -l s -s s --nohead -p bedGraphs/forward/", outPrefix, "_F.bedGraph -m bedGraphs/reverse/", outPrefix, "_R.bedGraph -- ", tssPath, " ", final_pro_tss_dir, "/", outPrefix, "_", tssPrefix, "_25mer_+-2kb.txt -2000 25 160", sep = ""))
+system(paste(scriptsPath, "/NascentTranscriptionCore/NIH_scripts/make_heatmap/make_heatmap -t 6 -l s -s s --nohead -p bedGraphs/forward/", outPrefix, "_F.bedGraph -m bedGraphs/reverse/", outPrefix, "_R.bedGraph -- ", tssPath, " ", final_pro_tss_dir, "/", outPrefix, "_", tssPrefix, "_25mer_+-2kb.txt -2000 25 160", sep = ""))
 
 tssMat <- read.table(paste(final_pro_tss_dir, "/", outPrefix, "_", tssPrefix, "_25mer_+-2kb.txt", sep = ""), header = T, sep = "\t", row.names = 1)
 
